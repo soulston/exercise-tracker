@@ -1,21 +1,18 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import Alerts from './alerts'
+import Alert from './alert'
 
-export default class CreateUser extends Component {
+class CreateUser extends Component {
+  state = {
+    username: '',
+    alertState: false,
+    alertMessage: false
+  }
   constructor(props) {
     super(props);
 
     this.onChangeUsername = this.onChangeUsername.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
-
-    this.state = {
-      username: '',
-      alertState: false,
-      alertMessage: false
-    }
-
-
   }
 
   onChangeUsername(e) {
@@ -36,18 +33,19 @@ export default class CreateUser extends Component {
     axios
       .post('http://localhost:5000/users/adds', user)
       .then((response) => {
+        console.log("User added!");
         this.setState({
           alertState: 'success',
           alertMessage: 'The user was created successfully.'
         });
-        //this.setState({name: response.data.name});
+        
       })
       .catch((e) => 
       {
         console.error(e);
-          this.setState({
-          alertState: 'error',
-          alertMessage: 'The user was not created.'
+        this.setState({
+          alertState: 'danger',
+          alertMessage: 'The user was not created. Please try again later.'
         });
       });
 
@@ -55,31 +53,13 @@ export default class CreateUser extends Component {
       username: ''
     });
     
-    //   .then((response => { 
-    //     // console.log(response.data);
-    //     this.setState({
-    //       alertState: 'success',
-    //       alertMessage: 'The user was created successfully.'
-    //     })
-    //   })
-    //   .catch((e) => {
-    //     console.log('Error: ' + e);
-    //     this.setState({
-    //       alertState: 'error',
-    //       alertMessage: 'The user was not created.'
-    //     });
-    //   })
-    // );
-    // this.setState({
-    //   username: ''
-    // });
   }
 
   render() {
     return (
       <div>
         <h3>Create New User</h3>
-        <Alerts />
+        <Alert alertState={this.state.alertState} alertMessage={this.state.alertMessage} />
         <form onSubmit={this.onSubmit}>
           <div className="form-group"> 
             <label>Username: </label>
@@ -98,3 +78,5 @@ export default class CreateUser extends Component {
     )
   }
 }
+
+export default CreateUser;
