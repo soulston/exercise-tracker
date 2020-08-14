@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import Alerts from './alerts'
 
 export default class CreateUser extends Component {
   constructor(props) {
@@ -9,8 +10,12 @@ export default class CreateUser extends Component {
     this.onSubmit = this.onSubmit.bind(this);
 
     this.state = {
-      username: ''
+      username: '',
+      alertState: false,
+      alertMessage: false
     }
+
+
   }
 
   onChangeUsername(e) {
@@ -26,20 +31,55 @@ export default class CreateUser extends Component {
       username: this.state.username
     }
 
-    console.log(user);
+    // console.log(user);
 
-    axios.post('http://localhost:5000/users/add', user)
-      .then(res => console.log(res.data));
+    axios
+      .post('http://localhost:5000/users/adds', user)
+      .then((response) => {
+        this.setState({
+          alertState: 'success',
+          alertMessage: 'The user was created successfully.'
+        });
+        //this.setState({name: response.data.name});
+      })
+      .catch((e) => 
+      {
+        console.error(e);
+          this.setState({
+          alertState: 'error',
+          alertMessage: 'The user was not created.'
+        });
+      });
 
     this.setState({
       username: ''
-    })
+    });
+    
+    //   .then((response => { 
+    //     // console.log(response.data);
+    //     this.setState({
+    //       alertState: 'success',
+    //       alertMessage: 'The user was created successfully.'
+    //     })
+    //   })
+    //   .catch((e) => {
+    //     console.log('Error: ' + e);
+    //     this.setState({
+    //       alertState: 'error',
+    //       alertMessage: 'The user was not created.'
+    //     });
+    //   })
+    // );
+    // this.setState({
+    //   username: ''
+    // });
   }
 
   render() {
     return (
       <div>
         <h3>Create New User</h3>
+        <Alerts />
         <form onSubmit={this.onSubmit}>
           <div className="form-group"> 
             <label>Username: </label>
